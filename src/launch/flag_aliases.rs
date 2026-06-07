@@ -35,6 +35,7 @@ pub enum KnobField {
   UbatchSize,
   RopeFreqScale,
   Keep,
+  Device,
 }
 
 /// What the parser expects after the flag head. Bool consumes no
@@ -47,6 +48,8 @@ pub enum ValueKind {
   Bool,
   /// `cache_type_k` / `cache_type_v` allowed set.
   KvCacheType,
+  /// Free-form string (e.g. device selector).
+  Str,
 }
 
 /// One row in the alias table.
@@ -97,6 +100,13 @@ const SPECS: &[KnobSpec] = &[
     canonical: "--n-cpu-moe",
     aliases: &["-ncmoe"],
     kind: ValueKind::U32,
+    fallback_label: LayerLabel::ServerDefault,
+  },
+  KnobSpec {
+    field: KnobField::Device,
+    canonical: "--device",
+    aliases: &["-d"],
+    kind: ValueKind::Str,
     fallback_label: LayerLabel::ServerDefault,
   },
   KnobSpec {
@@ -307,6 +317,7 @@ mod tests {
         "--reasoning",
         "--n-gpu-layers",
         "--n-cpu-moe",
+        "--device",
         "--threads",
         "--cache-type-k",
         "--cache-type-v",
